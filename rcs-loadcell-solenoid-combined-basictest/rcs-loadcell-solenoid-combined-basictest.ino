@@ -35,8 +35,9 @@ void loop() {
 
 void logLoad(){
   Serial.print("Reading: ");
-  Serial.print(loadCell.get_units(), 0); //returns a float. 2nd param is # of decimal places to display/record. In grams the 1st dec is definitely unreliable. 
-  Serial.print(" g"); //You can change this to kg but you'll need to refactor the calibration_factor
+  int valInNewtons = loadCell.get_units()*9.81/1000;
+  Serial.print(valInNewtons, 3); //returns a float. 2nd param is # of decimal places to display/record. In grams the 1st dec is definitely unreliable. 
+  Serial.print(" N"); //You can change this to kg but you'll need to refactor the calibration_factor
   Serial.println();
 }
 
