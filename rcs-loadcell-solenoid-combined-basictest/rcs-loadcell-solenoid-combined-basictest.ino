@@ -12,7 +12,7 @@
 #define LOADCELL_SCK_PIN  2
 
 int solenoidPin = 12; 
-int delayVal = 1000; // 1000 ms = 1 sec
+int delayVal = 500; // 1000 ms = 1 sec
 
 HX711 loadCell;
 void setup() {
@@ -24,10 +24,6 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(solenoidPin, HIGH);
-  logLoad();
-  delay(delayVal);
-  digitalWrite(solenoidPin, LOW);
   logLoad();
   delay(delayVal);
 
