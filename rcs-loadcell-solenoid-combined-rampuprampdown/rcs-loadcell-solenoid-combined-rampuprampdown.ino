@@ -16,12 +16,14 @@
 
 #define OPEN_TIME 5000
 #define CLOSE_TIME 10000
+#define PULSES 3
 
 HX711 loadCell;
 Button button(BUTTON_PIN);
 
 unsigned long startTime;
 unsigned long now;
+unsigned long trueStartTime;
 
 void setup() {
   Serial.begin(115200);
@@ -36,12 +38,13 @@ void setup() {
     //Serial.println(button.getState());
   } // button is pulled LOW when pressed.
   startTime = millis();
+  trueStartTime = startTime;
   Serial.print("Start: ");
   Serial.println(startTime);
 }
 
 void loop() {
-  now = millis();
+  /*now = millis();
   logLoad();
   if(now - startTime >= OPEN_TIME){
     if(now - startTime >= CLOSE_TIME){
@@ -49,33 +52,43 @@ void loop() {
     }else {
       openSolenoid();
     }
+  }*/
+  for(int i = 0;i<PULSES;i++){
+    while(millis()-startTime <= OPEN_TIME){
+      logLoad();
+    }
+    openSolenoid();
+    while(millis()-startTime <= CLOSE_TIME){
+      logLoad();
+    }
+    closeSolenoid();
+    startTime = millis();
   }
-  
+  int c = 0;
+  while(c < 50){
+    logLoad();
+    c++;
+  }
+  while(1){};
 }
 
 void openSolenoid(){
   // example output: t:<milliseconds> SO
-  Serial.print("t:");
-  Serial.print(millis() - startTime);
-  Serial.println(" SO");
   digitalWrite(SOLENOID_PIN, HIGH);
 }
 
 void closeSolenoid(){
   // example output: t:<milliseconds> SC
-  Serial.print("t:");
-  Serial.print(millis() - startTime);
-  Serial.println(" SC");
   digitalWrite(SOLENOID_PIN, LOW);
 }
 
 void logLoad(){
   // example output: t:<milliseconds> L<loadcellvalue>
   float valInNewtons = loadCell.get_units()*9.81/1000;
-  Serial.print("t:");
-  Serial.print(millis() - startTime);
-  Serial.print(" L");
-  Serial.print(valInNewtons, 3); //returns a float. 2nd param is # of decimal places to display/record. In grams the 1st dec is definitely unreliable. 
-  Serial.println(" N");
+  Serial.print(millis() - trueStartTime);
+  Serial.print(",");
+  Serial.print(digitalRead(SOLENOID_PIN));
+  Serial.print(",");
+  Serial.println(valInNewtons, 3); //returns a float. 2nd param is # of decimal places to display/record. In grams the 1st dec is definitely unreliable. 
 }
 
