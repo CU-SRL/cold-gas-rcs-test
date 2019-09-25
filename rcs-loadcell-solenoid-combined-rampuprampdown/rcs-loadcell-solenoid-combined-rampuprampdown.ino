@@ -14,9 +14,9 @@
 #define BUTTON_PIN 8
 #define SOLENOID_PIN 12
 
-#define OPEN_TIME 5000
-#define CLOSE_TIME 10000
-#define PULSES 3
+#define OPEN_TIME 100
+#define CLOSE_TIME 200
+#define PULSES 5
 
 HX711 loadCell;
 Button button(BUTTON_PIN);
@@ -33,7 +33,14 @@ void setup() {
   loadCell.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
   loadCell.set_scale(calibration_factor);
   loadCell.tare(); // zero at startup
-  Serial.println("Waiting for start signal");
+  Serial.println("Test Sequence:");
+  Serial.print("Open Time: ");
+  Serial.println(OPEN_TIME);
+  Serial.print("Close Time: ");
+  Serial.println(CLOSE_TIME);
+  Serial.print("Number of Pulses: ");
+  Serial.println(PULSES);
+  Serial.println("\nWaiting for start signal");
   while(button.getState()){
     //Serial.println(button.getState());
   } // button is pulled LOW when pressed.
